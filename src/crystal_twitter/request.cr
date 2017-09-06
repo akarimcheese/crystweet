@@ -23,6 +23,11 @@ module Twitter
             self
         end
         
+        def with_query(query : String)
+            @params.add("q", query)
+            self
+        end
+        
         def exec
             response = @client.get("#{@url}#{@params.to_s}")
             if response.status_code == 429

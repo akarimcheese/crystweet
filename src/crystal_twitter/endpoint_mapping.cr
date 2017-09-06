@@ -3,7 +3,8 @@ module Twitter
         def initialize
             @mapping = {
                 :following => "friends/ids.json?",
-                :followers => "followers/ids.json?"
+                :followers => "followers/ids.json?",
+                :userSearch => "users/search.json?"
             }
         end
         

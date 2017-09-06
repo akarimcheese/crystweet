@@ -14,10 +14,23 @@ module Twitter
             @endpoint_mapping = Twitter::EndpointMapping.new
         end
         
-        def getFollowersFor(user : (String | UInt64))
+        def userSearch(query, params)
+            endpoint = @endpoint_mapping[:userSearch]
+            request = 
+                Twitter::Request.new(@client, endpoint, params)
+                .with_query(query)
+            
+            response = request.exec
+            
+            users = [] of Twitter::User
+            
+            puts Array(Twitter::User).new((JSON::PullParser.new(response.body)))
+        end
+        
+        def getFollowersFor(user : (String | UInt64), params)
             endpoint = @endpoint_mapping[:followers]
             request = 
-                Twitter::Request.new(@client, endpoint, {} of String=>Array(String))
+                Twitter::Request.new(@client, endpoint, params)
                     .for_user(user)
                     
             response = request.exec
