@@ -1,0 +1,9 @@
+name: crystal_twitter
+version: 0.1.0
+
+authors:
+  - Ayman Karim <akarim1@terpmail.umd.edu>
+
+crystal: 0.23.1
+
+license: MIT
