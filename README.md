@@ -11,7 +11,7 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   crystal_twitter:
-    github: [your-github-name]/crystal_twitter
+    github: akarimcheese/crystal_twitter
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it ( https://github.com/[your-github-name]/crystal_twitter/fork )
+1. Fork it ( https://github.com/akarimcheese/crystal_twitter/fork )
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
@@ -36,4 +36,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [[your-github-name]](https://github.com/[your-github-name]) Ayman Karim - creator, maintainer
+- [akarimcheese](https://github.com/[akarimcheese]) Ayman Karim - creator, maintainer
