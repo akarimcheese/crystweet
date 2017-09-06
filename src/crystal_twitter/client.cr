@@ -24,7 +24,8 @@ module Twitter
             
             users = [] of Twitter::User
             
-            puts Array(Twitter::User).new((JSON::PullParser.new(response.body)))
+            puts response.body
+            Array(Twitter::User).new((JSON::PullParser.new(response.body)))
         end
         
         def getFollowersFor(user : (String | UInt64), params)
