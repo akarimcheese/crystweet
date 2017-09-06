@@ -3,6 +3,16 @@ module Twitter
         property client, url, params
         
         def initialize(@client : HTTP::Client, endpoint, params)
+            if params.is_a?(Hash(String,String))
+                new_params = {} of String=>Array(String)
+                
+                params.each do |key, val|
+                    new_params[key] = [val]
+                end
+                
+                params = new_params
+            end
+        
             @url = "https://api.twitter.com/1.1/#{endpoint}"
             
             @params = HTTP::Params.new(params)
