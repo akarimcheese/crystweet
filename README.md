@@ -3,6 +3,9 @@
 Writing a Twitter API Wrapper for the purposes of application-only queries. Mainly for my own use.
 There are better Twitter libraries out there such as https://github.com/sferik/twitter-crystal
 
+# TODO
+
+Figure out how crystal library versions work
 
 ## Installation
 
