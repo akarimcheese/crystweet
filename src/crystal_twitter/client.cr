@@ -24,7 +24,6 @@ module Twitter
             
             users = [] of Twitter::User
             
-            puts response.body
             Array(Twitter::User).new((JSON::PullParser.new(response.body)))
         end
         
