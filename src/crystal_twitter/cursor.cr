@@ -2,6 +2,7 @@ require "json"
 require "http/client"
 
 module Twitter
+    # Intended for user ids call for now
     struct CursorJSON(T)
         JSON.mapping({
             ids: Array(T),
@@ -12,6 +13,7 @@ module Twitter
         })
     end
     
+    # Intended for user ids call for now
     class Cursor(T)
         include Iterator(T)
         
