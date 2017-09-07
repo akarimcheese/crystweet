@@ -4,7 +4,8 @@ module Twitter
             @mapping = {
                 :following => "friends/ids.json?",
                 :followers => "followers/ids.json?",
-                :userSearch => "users/search.json?"
+                :userSearch => "users/search.json?",
+                :userLookup => "users/lookup.json?"
             }
         end
         

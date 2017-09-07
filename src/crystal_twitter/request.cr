@@ -1,6 +1,10 @@
+require "http/server"
+
 module Twitter
     struct Request
-        property client, url, params
+        property client, url, params, ignore_limit
+        
+        @@endpoint_mapping = Twitter::EndpointMapping.new
         
         def initialize(@client : HTTP::Client, endpoint, params)
             if params.is_a?(Hash(String,String))
@@ -13,7 +17,9 @@ module Twitter
                 params = new_params
             end
         
-            @url = "https://api.twitter.com/1.1/#{endpoint}"
+            @url = "https://api.twitter.com/1.1/#{@@endpoint_mapping[endpoint]}"
+            @verb = :GET
+            @ignore_limit = false
             
             @params = HTTP::Params.new(params)
         end
@@ -38,11 +44,29 @@ module Twitter
             self
         end
         
+        def ignore_rate_limit
+            @ignore_limit = true
+            self
+        end
+        
+        def as_post
+            @verb = :POST
+            self
+        end
+        
         def exec
-            response = @client.get("#{@url}#{@params.to_s}")
-            if response.status_code == 429
+            response : HTTP::Client::Response
+            
+            case @verb
+            when :POST
+                response = @client.post_form(@url, params.to_s)
+            else
+                response = @client.get("#{@url}#{@params.to_s}")
+            end
+            
+            if response.status_code == 429 && !@ignore_limit
                 # Replace with typed exception
-                raise "Rate Limit Exceeded. Wait 15 minutes."
+                raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
             end
             return response
         end

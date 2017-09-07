@@ -38,6 +38,53 @@ module Twitter
             self
         end
         
+        def to_screen_name_array
+            screen_names = [] of String
+            lookup_queue = [] of String
+            
+            each do |id|
+                lookup_queue << id.to_s
+                
+                if lookup_queue.size == 100
+                    lookup_response =
+                        Twitter::Request.new(@twitter_request.client, :userLookup, {"user_id" => [lookup_queue.join(",")]})
+                            .as_post
+                            .exec
+                    
+                    # Check status code
+                    screen_name_chunk = 
+                        Array(Twitter::User)
+                            .new(JSON::PullParser
+                                .new(lookup_response.body)
+                            ).map{ |user| user.screen_name }
+                    
+                    screen_names.concat(screen_name_chunk)
+            
+                    lookup_queue = [] of String
+                end
+            end
+            
+            if lookup_queue.size > 0
+                lookup_response =
+                    Twitter::Request.new(@twitter_request.client, :userLookup, {"user_id" => [lookup_queue.join(",")]})
+                        .as_post
+                        .exec
+                
+                # Check status code
+                screen_name_chunk = 
+                    Array(Twitter::User)
+                        .new(JSON::PullParser
+                            .new(lookup_response.body)
+                        ).map{ |user| user.screen_name }
+                
+                screen_names.concat(screen_name_chunk)
+        
+                lookup_queue = [] of String
+            end
+            
+            screen_names
+        end
+        
         def sleep_on_rate_limit
             @sleep_on_limit = true
             self
@@ -50,7 +97,14 @@ module Twitter
             end
             
             if @index == @ids.size
-                response = @twitter_request.with_cursor(@next_cursor).exec
+                if @next_cursor == 0
+                    return Iterator::Stop::INSTANCE
+                end
+            
+                response = 
+                    @twitter_request.with_cursor(@next_cursor)
+                        .ignore_rate_limit
+                        .exec
                    
                 # TODO: Check that this status code is restricted to rate limit errors
                 if response.status_code == 429 && @sleep_on_limit
