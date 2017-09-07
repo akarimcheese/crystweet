@@ -9,6 +9,7 @@ There are better Twitter libraries out there such as https://github.com/sferik/t
 - Factor out core "cursor" iterator functionality into an interface/class, make individual subclasses/structs for individual cursors such as user id cursors and what not
 - Flow: New User Struct Instance -> Calls API Call for User, can use User Struct method to get followers and following and such
 - Ya know..., tests
+- Verbose mode
 
 ## Installation
 
