@@ -16,6 +16,5 @@ module Twitter
     #     ENV["TWITTER_ACCESS_TOKEN"],
     #     ENV["TWITTER_ACCESS_SECRET"]
     # ).getFollowingFor("karimcheese", {} of String=>Array(String))
-    # .sleep_on_rate_limit
     # .to_screen_name_array.size
 end

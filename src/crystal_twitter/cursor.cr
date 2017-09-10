@@ -18,7 +18,7 @@ module Twitter
         include Iterator(T)
         
         property ids, next_cursor, previous_cursor
-        property twitter_request, index, sleep_on_limit
+        property twitter_request, index
         
         @ids : Array(T)
         @next_cursor : UInt64
@@ -28,7 +28,6 @@ module Twitter
             json = CursorJSON(T).new(json)
             
             @twitter_request = twitter_request
-            @sleep_on_limit = false
             @ids = json.ids
             @next_cursor = json.next_cursor
             @previous_cursor = json.previous_cursor
@@ -40,6 +39,7 @@ module Twitter
             self
         end
         
+        # Consumes iterator... sorry
         def to_screen_name_array
             screen_names = [] of String
             lookup_queue = [] of String
@@ -51,6 +51,7 @@ module Twitter
                     lookup_response =
                         Twitter::Request.new(@twitter_request.client, :userLookup, {"user_id" => [lookup_queue.join(",")]})
                             .as_post
+                            .ignore_rate_limit
                             .exec
                     
                     # Check status code
@@ -87,11 +88,6 @@ module Twitter
             screen_names
         end
         
-        def sleep_on_rate_limit
-            @sleep_on_limit = true
-            self
-        end
-        
         def next
             if !@index || !@twitter_request
                 raise "Need to call initialize_with_request()"
@@ -107,12 +103,6 @@ module Twitter
                     @twitter_request.with_cursor(@next_cursor)
                         .ignore_rate_limit
                         .exec
-                   
-                # TODO: Check that this status code is restricted to rate limit errors
-                if response.status_code == 429 && @sleep_on_limit
-                    sleep(15 * 60 + 5)
-                    response = @twitter_request.with_cursor(@next_cursor).exec
-                end
                 
                 if response.status_code != 200
                     # TODO: Return exception instead

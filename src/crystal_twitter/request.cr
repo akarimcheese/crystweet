@@ -2,7 +2,7 @@ require "http/server"
 
 module Twitter
     struct Request
-        property client, url, params, ignore_limit
+        property client, url, params, retry_on_limit
         
         @@endpoint_mapping = Twitter::EndpointMapping.new
         
@@ -19,7 +19,7 @@ module Twitter
         
             @url = "https://api.twitter.com/1.1/#{@@endpoint_mapping[endpoint]}"
             @verb = :GET
-            @ignore_limit = false
+            @retry_on_limit = false
             
             @params = HTTP::Params.new(params)
         end
@@ -45,7 +45,7 @@ module Twitter
         end
         
         def ignore_rate_limit
-            @ignore_limit = true
+            @retry_on_limit = true
             self
         end
         
@@ -64,9 +64,16 @@ module Twitter
                 response = @client.get("#{@url}#{@params.to_s}")
             end
             
-            if response.status_code == 429 && !@ignore_limit
-                # Replace with typed exception
-                raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
+            if response.status_code == 429
+                # Perhaps add a nonblocking option
+                if @retry_on_limit
+                    puts "Rate limit reached... sleeping and retrying after 15 minutes..."
+                    sleep(15*60 + 5)
+                    exec
+                else
+                    # Replace with typed exception
+                    raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
+                end
             end
             return response
         end
