@@ -6,7 +6,7 @@ module Twitter
         
         @@endpoint_mapping = Twitter::EndpointMapping.new
         
-        def initialize(@client : HTTP::Client, endpoint, params)
+        def initialize(@client : Twitter::Client, endpoint, params)
             if params.is_a?(Hash(String,String))
                 new_params = {} of String=>Array(String)
                 
@@ -59,9 +59,11 @@ module Twitter
             
             case @verb
             when :POST
-                response = @client.post_form(@url, params.to_s)
+                @client.oauth
+                response = @client.client.post_form(@url, params.to_s)
             else
-                response = @client.get("#{@url}#{@params.to_s}")
+                @client.oauth
+                response = @client.client.get("#{@url}#{@params.to_s}")
             end
             
             if response.status_code == 429

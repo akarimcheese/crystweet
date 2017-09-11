@@ -15,6 +15,6 @@ module Twitter
     #     ENV["TWITTER_CONSUMER_SECRET"], 
     #     ENV["TWITTER_ACCESS_TOKEN"],
     #     ENV["TWITTER_ACCESS_SECRET"]
-    # ).getFollowingFor("karimcheese", {} of String=>Array(String))
+    # ).getFollowingFor("johncena", {} of String=>Array(String))
     # .to_screen_name_array.size
 end
