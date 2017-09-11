@@ -20,6 +20,13 @@ module Twitter
             consumer.authenticate(@client, oauth_access_token)
         end
         
+        # def oauth_stream
+        #     consumer = OAuth::Consumer.new("https://stream.twitter.com/1.1/", @consumer_key, @consumer_secret)
+        #     oauth_access_token = OAuth::AccessToken.new(@access_token, @access_secret)
+        #     @client = HTTP::Client.new("stream.twitter.com", tls: true)
+        #     consumer.authenticate(@client, oauth_access_token)
+        # end
+        
         def persistent
             @retry_on_limit = true
             self
@@ -59,8 +66,28 @@ module Twitter
             response = request.exec
             
             #Handle non-200
-            puts response.body
             Twitter::Cursor(UInt64).new(request, JSON::PullParser.new(response.body))
         end
+        
+        # def stream
+        #     @client = HTTP::Client.new("stream.twitter.com", tls: true)
+        #     oauth_stream()
+            
+        #     params = "track=nfl"
+            
+        #     puts "we out here"
+            
+        #     @client.connect_timeout = 60*60*24
+        #     @client.read_timeout = 60*60*24
+            
+        #     @client.post("https://stream.twitter.com/1.1/statuses/filter.json?#{params}") do |response|
+        #       puts "we in here"
+        #       puts response.inspect
+        #       puts response.status_code  # => 200
+        #       while !response.body_io.closed?
+        #         puts response.body_io.gets("\r\n")
+        #       end
+        #     end
+        # end
     end
 end

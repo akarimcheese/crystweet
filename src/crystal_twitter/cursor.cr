@@ -54,6 +54,7 @@ module Twitter
                             .ignore_rate_limit
                             .exec
                     
+                    puts lookup_response.body
                     # Check status code
                     screen_name_chunk = 
                         Array(Twitter::User)
