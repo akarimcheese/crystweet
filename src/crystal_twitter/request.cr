@@ -71,7 +71,7 @@ module Twitter
                 if @retry_on_limit
                     puts "Rate limit reached... sleeping and retrying after 15 minutes..."
                     sleep(15*60 + 5)
-                    exec
+                    return exec
                 else
                     # Replace with typed exception
                     raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
