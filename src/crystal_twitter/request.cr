@@ -56,13 +56,12 @@ module Twitter
         
         def exec
             response : HTTP::Client::Response
+            @client.oauth
             
             case @verb
             when :POST
-                @client.oauth
                 response = @client.client.post_form(@url, params.to_s)
             else
-                @client.oauth
                 response = @client.client.get("#{@url}#{@params.to_s}")
             end
             
