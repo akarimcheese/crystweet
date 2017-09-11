@@ -59,6 +59,7 @@ module Twitter
             response = request.exec
             
             #Handle non-200
+            puts response.body
             Twitter::Cursor(UInt64).new(request, JSON::PullParser.new(response.body))
         end
     end
