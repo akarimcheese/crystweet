@@ -1,7 +1,7 @@
 require "json"
 require "http/client"
 
-module Twitter
+module Twitter::Response
     struct User
         JSON.mapping({
             id: Int64,

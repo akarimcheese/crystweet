@@ -1,27 +1,25 @@
 require "./crystal_twitter/*"
+require "./crystal_twitter/rest/*"
+require "./crystal_twitter/stream/*"
+require "./crystal_twitter/models/request/*"
 
 module Twitter
-    # Twitter::Client.new(
+    # client = Twitter::Rest::Client.new(
     #     ENV["TWITTER_CONSUMER_KEY"], 
     #     ENV["TWITTER_CONSUMER_SECRET"], 
     #     ENV["TWITTER_ACCESS_TOKEN"],
     #     ENV["TWITTER_ACCESS_SECRET"]
-    # ).userSearch("Adam Grove", {"count" => "1"})
+    # ).persistent
     
-    # i = 0
+    # puts Twitter::Request::User.new(
+    #     "jordwalke",
+    #     client
+    # ).following_ids(stringify_ids: true).to_a.size
     
-    # puts Twitter::Client.new(
-    #     ENV["TWITTER_CONSUMER_KEY"], 
-    #     ENV["TWITTER_CONSUMER_SECRET"], 
-    #     ENV["TWITTER_ACCESS_TOKEN"],
-    #     ENV["TWITTER_ACCESS_SECRET"]
-    # ).getFollowingFor("johncena", {} of String=>Array(String))
-    # .to_screen_name_array.size
-    
-    # Twitter::Client.new(
-    #     ENV["TWITTER_CONSUMER_KEY"], 
-    #     ENV["TWITTER_CONSUMER_SECRET"], 
-    #     ENV["TWITTER_ACCESS_TOKEN"],
-    #     ENV["TWITTER_ACCESS_SECRET"]
-    # ).stream
+    Twitter::Stream::Client.new(
+        ENV["TWITTER_CONSUMER_KEY"], 
+        ENV["TWITTER_CONSUMER_SECRET"], 
+        ENV["TWITTER_ACCESS_TOKEN"],
+        ENV["TWITTER_ACCESS_SECRET"]
+    ).stream
 end
