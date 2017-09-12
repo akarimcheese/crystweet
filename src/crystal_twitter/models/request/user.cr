@@ -7,10 +7,10 @@ module Twitter::Request
         @user_id : UInt64?
         @screen_name : String?
         
-        def initialize(@user_id : UInt64, @client : Twitter::Client)
+        def initialize(@client : Twitter::Rest::Client, @user_id : UInt64)
         end
         
-        def initialize(@screen_name : String, @client : Twitter::Client)
+        def initialize(@client : Twitter::Rest::Client, @screen_name : String)
         end
         
         # List Version

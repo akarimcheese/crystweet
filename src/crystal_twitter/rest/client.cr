@@ -72,6 +72,22 @@ module Twitter::Rest
             end
         end
         
+        def post(url, params)
+            oauth()
+            response = @client.post_form(url, params)
+            
+            if response.status_code == 200
+                return response
+            elsif response.status_code == 429 && @retry_on_limit
+                puts "Rate limit reached... sleeping and retrying after 15 minutes..."
+                sleep(15*60 + 5)
+                return get(url)
+            else
+                # Replace with typed exception
+                raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
+            end
+        end
+        
         # def stream
         #     @client = HTTP::Client.new("stream.twitter.com", tls: true)
         #     oauth_stream()
