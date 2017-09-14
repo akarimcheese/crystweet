@@ -15,7 +15,7 @@ module Twitter::Request
         
         # List Version
         def followers_list(cursor : UInt64? = nil, count : Int32? = nil, skip_status : Bool? = nil, include_user_identities : Bool? = nil)
-            # TODO
+            # TODO https://dev.twitter.com/rest/reference/get/followers/list
         end
         
         # IDs version
@@ -54,7 +54,7 @@ module Twitter::Request
         
         # List Version
         def following_list(cursor : UInt64? = nil, count : Int32? = nil, skip_status : Bool? = nil, include_user_identities : Bool? = nil)
-            # TODO
+            # TODO https://dev.twitter.com/rest/reference/get/friends/list
         end
         
         # IDs version

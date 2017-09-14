@@ -4,7 +4,7 @@ require "http/client"
 module Twitter::Response
     struct User
         JSON.mapping({
-            id: Int64,
+            id: UInt64,
             name: String,
             screen_name: String,
             location: {type: String, nilable: true},

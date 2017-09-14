@@ -29,6 +29,7 @@ module Twitter::Request
             end
         end
         
+        # TODO: entity support
         def lookup_users(include_entities : Bool? = nil)
             endpoint = "https://api.twitter.com/1.1/users/lookup.json?"
             user_ids, screen_names = @user_id, @screen_name
@@ -65,9 +66,11 @@ module Twitter::Request
         end
         
         def lookup_friendships()
+            raise "Not implemented"
             # TODO
+            # https://dev.twitter.com/rest/reference/get/friendships/lookup
         end
         
-        # TODO: Single user lookup
+        # TODO: Single user lookup here or in Twitter::Request::User
     end
 end

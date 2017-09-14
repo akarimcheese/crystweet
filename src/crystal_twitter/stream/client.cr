@@ -11,22 +11,36 @@ module Twitter::Stream
             "1.1"
         end
         
-        def stream
+        # Info regarding params: https://dev.twitter.com/streaming/overview/request-parameters
+        # TODO: add and handle locations, delimited, & stall params
+        def stream(follow : Array(UInt64)? = nil, track : Array(String)? = nil)
             oauth()
             
-            params = "track=nfl"
+            if follow && follow.size > 5000
+                raise "Cannot follow more than 5000 user ids"
+            elsif track && track.size > 400
+                raise "Cannot track more than 400 keywords"
+            end
             
-            puts "we out here"
+            params = {} of String => (String | Nil)
             
+            params["follow"] = follow.join(",") if follow
+            params["track"] = track.join(",") if track
+            params.compact! # Safekeeping
+            
+            # TODO: check if the 2 lines below are necessary
             @client.connect_timeout = 60*60*24
             @client.read_timeout = 60*60*24
             
-            @client.post("https://stream.twitter.com/1.1/statuses/filter.json?#{params}") do |response|
-              puts "we in here"
-              puts response.inspect
-              puts response.status_code  # => 200
+            @client.post_form("https://stream.twitter.com/1.1/statuses/filter.json?", params) do |response|
               while !response.body_io.closed?
-                puts response.body_io.gets("\r\n")
+                # TODO: Yield tweet object, only yield string if param as_strings = true
+                # do this through some proc idk
+                # yield response.body_io.gets("\r\n")
+                
+                # FIXME: break these two lines up into better, readable steps
+                string = response.body_io.gets("\r\n")
+                yield Twitter::Response::Tweet.new(JSON::PullParser.new(string)) if string
               end
             end
         end
