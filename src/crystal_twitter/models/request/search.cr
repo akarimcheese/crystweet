@@ -2,7 +2,7 @@ require "json"
 require "http"
 
 module Twitter::Request
-    struct Search
+    class Search
         @query : String
         
         def initialize(@client : Twitter::Rest::Client, @query : String)

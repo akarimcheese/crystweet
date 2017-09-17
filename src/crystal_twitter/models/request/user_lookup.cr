@@ -1,7 +1,7 @@
 require "../../rest/client"
 
 module Twitter::Request
-    class UserLookup
+    struct UserLookup
         # Pls just use one or the other
         @user_id : (Array(UInt64) | Array(String) | Nil)
         @screen_name : (Array(String) | Nil)

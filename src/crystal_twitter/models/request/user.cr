@@ -3,7 +3,7 @@ require "http"
 require "../response/cursors/user_id_cursor"
 
 module Twitter::Request
-    struct User
+    class User
         @user_id : UInt64?
         @screen_name : String?
         

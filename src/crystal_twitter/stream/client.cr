@@ -40,6 +40,26 @@ module Twitter::Stream
                 
                 # FIXME: break these two lines up into better, readable steps
                 string = response.body_io.gets("\r\n")
+                if string
+                    puts string
+                    puts "Tweet keys"
+                    puts JSON.parse(string).as_h.keys.inspect
+                    t = JSON.parse(string)
+                    if t["retweeted_status"]?
+                        puts "RT status keys"
+                        puts JSON.parse(string)["retweeted_status"].as_h.keys.inspect
+                        puts "RT user keys"
+                        puts JSON.parse(string)["retweeted_status"]["user"].as_h.keys.inspect
+                    end
+                    if t["quoted_status"]?
+                        puts "RT User keys"
+                        puts JSON.parse(string)["quoted_status"].as_h.keys.inspect
+                        puts "Quote user keys"
+                        puts JSON.parse(string)["quoted_status"]["user"].as_h.keys.inspect
+                    end
+                    h = JSON.parse(string)["user"].as_h.keys.inspect
+                end
+                puts JSON.parse(string).as_h["user"] if string
                 yield Twitter::Response::Tweet.new(JSON::PullParser.new(string)) if string
               end
             end
