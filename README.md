@@ -42,6 +42,7 @@ Start a stream
 ```crystal
 client.stream(track: ["WWE", "John Cena"]) do |tweet|
   # do something with Twitter::Response::Tweet instance
+  # e.g. puts tweet.text
 end
 ```
 
