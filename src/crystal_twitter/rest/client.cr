@@ -108,5 +108,17 @@ module Twitter::Rest
         #       end
         #     end
         # end
+        
+        def user(identifier)
+            Twitter::Request::User.new(self, identifier)
+        end
+        
+        def search(query)
+            Twitter::Request::Search.new(self, query)
+        end
+        
+        def user_lookup(identifiers)
+            Twitter::Request::UserLookup.new(self, identifiers)
+        end
     end
 end

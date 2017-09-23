@@ -9,7 +9,7 @@ module Twitter::Response
             name: String,
             screen_name: String,
             location: {type: String, nilable: true},
-            description: String,
+            description: {type: String, nilable: true},
             url: {type: String, nilable: true},
             # entities: TODO,
             protected: Bool,

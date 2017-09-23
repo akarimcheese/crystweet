@@ -1,58 +1,81 @@
 require "json"
 require "http/client"
+require "./tweet/entities"
 require "./*"
 
+# TODO: Add Entity
 module Twitter::Response
-    # Class instead of struct because of uncertain memory size
-    class Tweet
-        JSON.mapping({
-            id: UInt64,
-            id_str: String,
-            created_at: String,
-            text: String,
-            user: Twitter::Response::User,
-            favorites_count: {type: Int32, nilable: true},
-            retweet_count: Int32,
-            retweeted_tweet: {type: Tweet, nilable: true, key: "retweeted_status"},
-            lang: {type: String, nilable: true},
+    abstract struct Tweet
+        property id : UInt64
+        property id_str : String
+        property created_at : String # TODO: make datetime?
+        property text : String
+        property user : Twitter::Response::User
+        property favorites_count : Int32?
+        property retweet_count : Int32
+        property lang : String?
             
-            # Reply
-            in_reply_to_screen_name: {type: String, nilable: true},
-            in_reply_to_user_id: {type: UInt64, nilable: true},
-            in_reply_to_user_id_str: {type: String, nilable: true},
-            in_reply_to_tweet_id: {type: UInt64, nilable: true, key: "in_reply_to_status_id"},
-            in_reply_to_tweet_id_str: {type: String, nilable: true, key: "in_reply_to_status_id_str"},
-            reply_count: Int32, # Not in doc
+        property in_reply_to_screen_name : String?
+        property in_reply_to_user_id : UInt64?
+        property in_reply_to_user_id_str : String?
+        property in_reply_to_tweet_id : UInt64?
+        property in_reply_to_tweet_id_str : String?
+        property reply_count : Int32 # Not in doc
             
-            # Quoted
-            is_quote_tweet: {type: Bool, key: "is_quote_status"}, # Not in doc
-            quoted_tweet_id: {type: UInt64, nilable: true, key: "quoted_status_id"},
-            quoted_tweet_id_str: {type: String, nilable: true, key: "quoted_status_id_str"},
-            quoted_tweet: {type: Tweet, nilable: true, key: "quoted_status"},
-            quote_count: Int32, # Not in doc
+        property is_quote_tweet : Bool # Not in doc
+        property quoted_tweet_id : UInt64?
+        property quoted_tweet_id_str : String?
+        property quote_count : Int32 # Not in doc
             
-            # Perspectival
-            favorited: {type: Bool, nilable: true},
-            retweeted: {type: Bool, nilable: true},
-            
-            # Possibly omit
-            possibly_sensitive: {type: Bool, nilable: true},
-            source: {type: String, nilable: true},
-            filter_level: {type: String, nilable: true},
-            withheld_copyright: {type: Bool, nilable: true},
-            withheld_in_countries: {type: Array(String), nilable: true},
-            withheld_scope: {type: String, nilable: true}
-            
-            # TODO:
-            # coordinates: Twitter::Coordinates | Nil,
-            # current_user_retweet: ??, # Perspectival
-            # entities: Twitter::Entities | Nil,
-            # place: Twitter::Place | Nil,
-            # scopes: ??,
-            # truncated: Bool but do we even need to include this,
-            # display_text_range: ?? Not in doc but appears in tweets
-            # extended_entities: ?? Not in doc
-            
-        })
+        property favorited : Bool?
+        property retweeted : Bool?
+        
+        property entities : Entities
+        
+        property possibly_sensitive : Bool?
+        property source : String?
+        property filter_level : String?
+        property withheld_copyright : Bool?
+        property withheld_in_countries : Array(String)?
+        property withheld_scope : String?
+    
+        # placeholder to get rid of the "instance variable _ was not initialized 
+        # in all of the 'initialize methods..." compilation error
+        def initialize()
+            raise "Don't call initialize() directly from the Abstract Tweet struct"
+            @id = 0
+            @id_str = "0"
+            @created_at = ""
+            @text = ""
+            @user = Twitter::Response::User.new()
+            @retweet_count = 0
+            @reply_count = 0
+            @quote_count = 0
+            @is_quote_tweet = false
+            @entities = Entities.new()
+        end
+        
+        abstract def is_hydrated? : Bool
+        abstract def is_shallow? : Bool
+        
+        def retweeted_tweet? : ShallowTweet?
+            @retweeted_tweet
+        end
+        
+        def quoted_tweet? : ShallowTweet?
+            @quoted_tweet
+        end
+    
+        def is_reply?
+            return !@in_reply_to_screen_name.nil?
+        end
+        
+        def is_retweet?
+            return !@retweeted_tweet.nil?
+        end
+        
+        def is_quote?
+            return @is_quote_tweet
+        end
     end
 end

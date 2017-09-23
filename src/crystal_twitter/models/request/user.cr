@@ -10,7 +10,12 @@ module Twitter::Request
         def initialize(@client : Twitter::Rest::Client, @user_id : UInt64)
         end
         
-        def initialize(@client : Twitter::Rest::Client, @screen_name : String)
+        def initialize(@client : Twitter::Rest::Client, identifier : String, using_user_id? : Bool? = false)
+            if using_user_id?
+                @user_id = identifier.to_u64
+            else
+                @screen_name = identifier
+            end
         end
         
         # List Version
