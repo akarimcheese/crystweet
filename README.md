@@ -9,6 +9,7 @@ There are better Twitter libraries out there for user-specific queries, such as 
 - Factor out core "cursor" iterator functionality into an interface/class, make individual subclasses/structs for individual cursors such as user id cursors and what not
 - Ya know..., tests
 - Verbose mode
+- I'm pretty sure I'm using the wrong authentication for app-only queries, so we should either add another client constructor or add an app-specific client
 
 ## Installation
 
