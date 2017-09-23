@@ -2,14 +2,15 @@ require "./crystal_twitter/*"
 require "./crystal_twitter/rest/*"
 require "./crystal_twitter/stream/*"
 require "./crystal_twitter/models/request/*"
+require "./crystal_twitter/models/response/*"
 
 module Twitter
-    client = Twitter::Rest::Client.new(
-        ENV["TWITTER_CONSUMER_KEY"], 
-        ENV["TWITTER_CONSUMER_SECRET"], 
-        ENV["TWITTER_ACCESS_TOKEN"],
-        ENV["TWITTER_ACCESS_SECRET"]
-    ).persistent
+    # client = Twitter::Rest::Client.new(
+    #     ENV["TWITTER_CONSUMER_KEY"], 
+    #     ENV["TWITTER_CONSUMER_SECRET"], 
+    #     ENV["TWITTER_ACCESS_TOKEN"],
+    #     ENV["TWITTER_ACCESS_SECRET"]
+    # ).persistent
     
     # user_ids = Twitter::Request::User.new(
     #     client,
@@ -25,15 +26,15 @@ module Twitter
     # users = Twitter::Request::UserLookup.new(client, user_ids).lookup_users
     # puts users.size
     
-    puts client.search("john cena").users[0].inspect
+    # puts client.search("john cena").users[0].inspect
     
-    Twitter::Stream::Client.new(
-        ENV["TWITTER_CONSUMER_KEY"], 
-        ENV["TWITTER_CONSUMER_SECRET"], 
-        ENV["TWITTER_ACCESS_TOKEN"],
-        ENV["TWITTER_ACCESS_SECRET"]
-    )
-    .stream(track: ["WWE", "John Cena"]) do |tweet|
-        puts tweet
-    end
+    # Twitter::Stream::Client.new(
+    #     ENV["TWITTER_CONSUMER_KEY"], 
+    #     ENV["TWITTER_CONSUMER_SECRET"], 
+    #     ENV["TWITTER_ACCESS_TOKEN"],
+    #     ENV["TWITTER_ACCESS_SECRET"]
+    # )
+    # .stream(track: ["WWE", "John Cena"]) do |tweet|
+    #     puts tweet
+    # end
 end

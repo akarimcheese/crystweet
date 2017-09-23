@@ -26,7 +26,65 @@ dependencies:
 require "crystal_twitter"
 ```
 
-TODO: Write usage instructions here
+Creating a Stream Client
+
+```crystal
+Twitter::Stream::Client.new(
+  ENV["TWITTER_CONSUMER_KEY"], 
+  ENV["TWITTER_CONSUMER_SECRET"], 
+  ENV["TWITTER_ACCESS_TOKEN"],
+  ENV["TWITTER_ACCESS_SECRET"]
+)
+```
+
+Start a stream
+
+```crystal
+client.stream(track: ["WWE", "John Cena"]) do |tweet|
+  # do something with Twitter::Response::Tweet instance
+end
+```
+
+Creating a REST Client
+
+```crystal
+client = Twitter::Rest::Client.new(
+  ENV["TWITTER_CONSUMER_KEY"], 
+  ENV["TWITTER_CONSUMER_SECRET"], 
+  ENV["TWITTER_ACCESS_TOKEN"],
+  ENV["TWITTER_ACCESS_SECRET"]
+)
+```
+
+Having REST Client sleep on rate limit
+```crystal
+client.persistent
+```
+
+Finding follower ids for a user as an iterator (lazy query)
+```crystal
+ids = client.user("JohnCena").followers_ids
+
+# OR
+
+ids = Twitter::REST::User.new(client, "John Cena").follower_ids
+```
+
+Get a user id iterator as an array (eager query)
+```crystal
+ids = ids.to_a
+```
+
+Convert array of user ids to array of fully hydrated users
+```crystal
+users = client.user_lookup(ids).lookup_users
+
+# OR
+
+users = Twitter::REST::UserLookup.new(client, ids).lookup_users
+```
+
+TODO: Convert iterator of user ids to fully hydrated users
 
 ## Development
 
