@@ -4,6 +4,10 @@ require "./tweet/entities"
 require "./*"
 
 # TODO: Add Entity
+# TODO: Add Extended_Entities
+# CONSIDER: Making all fields optional. 
+# Same for User. This is because both models are used in processing
+# streaming results
 module Twitter::Response
     abstract struct Tweet
         property id : UInt64
