@@ -1,8 +1,8 @@
-require "./crystal_twitter/*"
-require "./crystal_twitter/rest/*"
-require "./crystal_twitter/stream/*"
-require "./crystal_twitter/models/request/*"
-require "./crystal_twitter/models/response/*"
+require "./crystweet/*"
+require "./crystweet/rest/*"
+require "./crystweet/stream/*"
+require "./crystweet/models/request/*"
+require "./crystweet/models/response/*"
 
 module Twitter
     # client = Twitter::Rest::Client.new(

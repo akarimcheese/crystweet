@@ -1,4 +1,4 @@
-# crystal_twitter
+# crystweet
 
 Writing a Twitter API Wrapper for the purposes of application-specific queries and streaming. Mainly for my own use.
 There are better Twitter libraries out there for user-specific queries, such as https://github.com/sferik/twitter-crystal.
@@ -16,14 +16,14 @@ Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
-  crystal_twitter:
-    github: akarimcheese/crystal_twitter
+  crystweet:
+    github: akarimcheese/crystweet
 ```
 
 ## Usage
 
 ```crystal
-require "crystal_twitter"
+require "crystweet"
 ```
 
 Creating a Stream Client
@@ -93,7 +93,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it ( https://github.com/akarimcheese/crystal_twitter/fork )
+1. Fork it ( https://github.com/akarimcheese/crystweet/fork )
 2. Create your feature branch (git checkout -b my-new-feature)
 3. Commit your changes (git commit -am 'Add some feature')
 4. Push to the branch (git push origin my-new-feature)
