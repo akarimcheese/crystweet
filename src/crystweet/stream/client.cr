@@ -96,10 +96,10 @@ module Twitter::Stream
                 # end
                 
                 begin
-                    start = Time.now()
+                    # start = Time.now()
                     tweet = Twitter::Response::TopLevelTweet.new(JSON::PullParser.new(line)) 
-                    finish = Time.now()
-                    puts "Time to parse: #{(finish - start).total_milliseconds}"
+                    # finish = Time.now()
+                    # puts "Time to parse: #{(finish - start).total_milliseconds}"
 
                     yield tweet if include_tweet(tweet)
                 # FIXME: Replace/modify error handling to handle all
