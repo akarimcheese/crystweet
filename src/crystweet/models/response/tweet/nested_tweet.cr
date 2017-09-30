@@ -1,17 +1,18 @@
-require "../tweet"
-require "./*"
+require "../*"
 
 module Twitter::Response
-    struct HydratedTweet < Twitter::Response::Tweet
+    struct NestedTweet < Tweet
+        @quoted_tweet : Nil
+        @retweeted_tweet : Nil
     
-        def is_hydrated?
-            true
-        end
-        
-        def is_shallow?
+        def is_top_level?
             false
         end
         
+        def is_nested?
+            true
+        end
+    
         JSON.mapping({
             id: UInt64,
             id_str: String,
@@ -20,7 +21,6 @@ module Twitter::Response
             user: Twitter::Response::User,
             favorites_count: {type: Int32, nilable: true},
             retweet_count: Int32,
-            retweeted_tweet: {type: ShallowTweet, nilable: true, key: "retweeted_status"},
             lang: {type: String, nilable: true},
             
             # Reply
@@ -35,7 +35,6 @@ module Twitter::Response
             is_quote_tweet: {type: Bool, key: "is_quote_status"}, # Not in doc
             quoted_tweet_id: {type: UInt64, nilable: true, key: "quoted_status_id"},
             quoted_tweet_id_str: {type: String, nilable: true, key: "quoted_status_id_str"},
-            quoted_tweet: {type: ShallowTweet, nilable: true, key: "quoted_status"},
             quote_count: Int32, # Not in doc
             
             # Perspectival
@@ -43,12 +42,6 @@ module Twitter::Response
             retweeted: {type: Bool, nilable: true},
             
             entities: Entities,
-            # Entities
-            # hashtags: {type: Array(String), root: "entities"},
-            # urls: {type: Array(String), root: "entities"},
-            # user_mentions: {type: Array(String), root: "entities"},
-            # symbols
-            # media : id, id_str, indices ?int array, media_url, media_url_https, url, display_url, expanded_url,... there's a lot
             
             # Possibly omit
             possibly_sensitive: {type: Bool, nilable: true},
@@ -69,4 +62,5 @@ module Twitter::Response
             # extended_entities: ?? Not in doc
         })
     end
+
 end

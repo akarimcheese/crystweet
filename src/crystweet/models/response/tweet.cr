@@ -3,7 +3,6 @@ require "http/client"
 require "./tweet/entities"
 require "./*"
 
-# TODO: Add Entity
 # TODO: Add Extended_Entities
 # CONSIDER: Making all fields optional. 
 # Same for User. This is because both models are used in processing
@@ -59,14 +58,14 @@ module Twitter::Response
             @entities = Entities.new()
         end
         
-        abstract def is_hydrated? : Bool
-        abstract def is_shallow? : Bool
+        abstract def is_top_level? : Bool
+        abstract def is_nested? : Bool
         
-        def retweeted_tweet? : ShallowTweet?
+        def retweeted_tweet? : NestedTweet?
             @retweeted_tweet
         end
         
-        def quoted_tweet? : ShallowTweet?
+        def quoted_tweet? : NestedTweet?
             @quoted_tweet
         end
     

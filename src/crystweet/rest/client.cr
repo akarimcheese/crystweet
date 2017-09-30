@@ -1,6 +1,7 @@
 require "../client"
 require "../request"
 require "../models/response/*"
+require "../models/response/tweet/*"
 
 module Twitter::Rest
     class Client < Twitter::Client
@@ -109,8 +110,12 @@ module Twitter::Rest
         #     end
         # end
         
-        def user(identifier)
+        def user(identifier : (String | UInt64))
             Twitter::Request::User.new(self, identifier)
+        end
+        
+        def user(user : (Twitter::Response::UserMention))
+            Twitter::Request::User.new(self, user.id)
         end
         
         def search(query)

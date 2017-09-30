@@ -1,5 +1,5 @@
 require "../client"
-require "../models/response/tweet/hydrated_tweet"
+require "../models/response/tweet/top_level_tweet"
 
 # TODO: Handle all message types
 # https://dev.twitter.com/streaming/overview/messages-types
@@ -96,10 +96,10 @@ module Twitter::Stream
                 # end
                 
                 begin
-                    # start = Time.now()
-                    tweet = Twitter::Response::HydratedTweet.new(JSON::PullParser.new(line)) 
-                    # finish = Time.now()
-                    # puts "Time to parse: #{(finish - start).total_milliseconds}"
+                    start = Time.now()
+                    tweet = Twitter::Response::TopLevelTweet.new(JSON::PullParser.new(line)) 
+                    finish = Time.now()
+                    puts "Time to parse: #{(finish - start).total_milliseconds}"
 
                     yield tweet if include_tweet(tweet)
                 # FIXME: Replace/modify error handling to handle all
