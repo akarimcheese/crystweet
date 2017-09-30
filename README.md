@@ -10,6 +10,8 @@ There are better Twitter libraries out there for user-specific queries, such as 
 - Ya know..., tests
 - Verbose mode
 - I'm pretty sure I'm using the wrong authentication for app-only queries, so we should either add another client constructor or add an app-specific client
+- Lightweight tweet mode - Option to wrap tweet with model containing only essential data
+- Support Enterprise Twitter API
 
 ## Installation
 
