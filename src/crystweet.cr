@@ -12,7 +12,7 @@ module Twitter
     #     ENV["TWITTER_ACCESS_SECRET"]
     # ).persistent
     
-    # puts Twitter::Request::Relationship.new(client, "JohnCena", "AJStylesOrg").show()
+    # puts Twitter::Request::User.new(client, "KimKardashian").is_followed_by?("MemesOnHistory")
     
     # puts Twitter::Request::User.new(client, "jordwalke").show
     

@@ -119,5 +119,24 @@ module Twitter::Request
             
             return response
         end
+        
+        # Not directly API Calls
+        def is_following?(target_identifier : (UInt64|String))
+            relationship = @client.relationship(
+                @user_id || @screen_name || UInt64.new(0), 
+                target_identifier
+            ).show()
+            
+            return relationship.source.following
+        end
+        
+        def is_followed_by?(target_identifier : (UInt64|String))
+            relationship = @client.relationship(
+                @user_id || @screen_name || UInt64.new(0), 
+                target_identifier
+            ).show()
+            
+            return relationship.source.followed_by
+        end
     end
 end

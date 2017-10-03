@@ -136,7 +136,7 @@ module Twitter::Rest
             Twitter::Request::User.new(self, user.id)
         end
         
-        def relationship(source_identifier, target_identifier)
+        def relationship(source_identifier : (UInt64 | String), target_identifier : (UInt64 | String))
             Twitter::Request::Relationship.new(self, source_identifier, target_identifier)
         end
         
