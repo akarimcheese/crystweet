@@ -6,6 +6,12 @@ require "../models/response/tweet/*"
 module Twitter::Rest
     class Client < Twitter::Client
         property retry_on_limit
+        property on_rate_limit : Proc(Void)
+        
+        def initialize(consumer_key, consumer_secret, access_token, access_secret)
+            @on_rate_limit = ->{ }
+            super(consumer_key, consumer_secret, access_token, access_secret)
+        end
         
         def base_url
             "api.twitter.com"
@@ -17,6 +23,12 @@ module Twitter::Rest
         
         def persistent
             @retry_on_limit = true
+            self
+        end
+        
+        def persistent(on_rate_limit)
+            @retry_on_limit = true
+            @on_rate_limit = on_rate_limit
             self
         end
         
@@ -64,7 +76,8 @@ module Twitter::Rest
             if response.status_code == 200
                 return response
             elsif response.status_code == 429 && @retry_on_limit
-                puts "Rate limit reached... sleeping and retrying after 15 minutes..."
+                # puts "Rate limit reached... sleeping and retrying after 15 minutes..."
+                @on_rate_limit.call()
                 sleep(15*60 + 5)
                 return get(url)
             else
