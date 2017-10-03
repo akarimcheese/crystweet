@@ -28,13 +28,13 @@ module Twitter
     
     # puts client.search("john cena").users[0].inspect
     
-    # Twitter::Stream::Client.new(
-    #     ENV["TWITTER_CONSUMER_KEY"], 
-    #     ENV["TWITTER_CONSUMER_SECRET"], 
-    #     ENV["TWITTER_ACCESS_TOKEN"],
-    #     ENV["TWITTER_ACCESS_SECRET"]
-    # )
-    # .stream(track: ["WWE", "John Cena"]) do |tweet|
-    #     puts tweet
-    # end
+    Twitter::Stream::Client.new(
+        ENV["TWITTER_CONSUMER_KEY"], 
+        ENV["TWITTER_CONSUMER_SECRET"], 
+        ENV["TWITTER_ACCESS_TOKEN"],
+        ENV["TWITTER_ACCESS_SECRET"]
+    )
+    .stream(track: ["WWE", "John Cena", "Roman Reigns"]) do |tweet|
+        puts tweet
+    end
 end

@@ -5,6 +5,7 @@ require "../models/response/tweet/top_level_tweet"
 # https://dev.twitter.com/streaming/overview/messages-types
 # Blank Lines [x]
 # Status deletion notices [ ]
+# Limit notices [ ] ex. {"limit":{"track":6,"timestamp_ms":"1506760710929"}}
 # Location deletion notices [ ]
 # Withheld content notices [ ]
 # Disconnect messages [ ]
