@@ -93,7 +93,8 @@ module Twitter::Rest
             if response.status_code == 200
                 return response
             elsif response.status_code == 429 && @retry_on_limit
-                puts "Rate limit reached... sleeping and retrying after 15 minutes..."
+                # puts "Rate limit reached... sleeping and retrying after 15 minutes..."
+                @on_rate_limit.call()
                 sleep(15*60 + 5)
                 return get(url)
             else
