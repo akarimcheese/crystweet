@@ -136,6 +136,14 @@ module Twitter::Rest
             Twitter::Request::User.new(self, user.id)
         end
         
+        def relationship(source_identifier, target_identifier)
+            Twitter::Request::Relationship.new(self, source_identifier, target_identifier)
+        end
+        
+        def relationship(source_user : (Twitter::Response::UserMention|Twitter::Response::User), target_user : (Twitter::Response::UserMention|Twitter::Response::User))
+            Twitter::Request::Relationship.new(self, source_user.id, target_user.id)
+        end
+    
         def search(query)
             Twitter::Request::Search.new(self, query)
         end

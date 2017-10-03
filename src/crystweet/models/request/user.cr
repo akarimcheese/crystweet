@@ -20,12 +20,11 @@ module Twitter::Request
         
         def show(include_entities : Bool? = nil)
             endpoint = "users/show.json?"
-            user_id, screen_name = @user_id, @screen_name
             
             params = {} of String => (String | Nil)
             
-            params["user_id"] = @user_id.to_s if user_id
-            params["screen_name"] = @screen_name if screen_name
+            params["user_id"] = @user_id.to_s if @user_id
+            params["screen_name"] = @screen_name if @screen_name
             params["include_entities"] = include_entities.to_s if include_entities
             params.compact! # Safekeeping
             
@@ -113,7 +112,7 @@ module Twitter::Request
             end
         end
         
-        # Find a way to refactor this to share code with other requests made
+        # TODO: Find a way to refactor this to share code with other requests made
         def get(endpoint, params)
             encoded_params = HTTP::Params.encode(params)
             response = @client.get("https://api.twitter.com/1.1/#{endpoint}#{encoded_params}")
