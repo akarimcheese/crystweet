@@ -49,4 +49,8 @@ module Twitter::Response
             # notifications: Nil
         })
     end
+    
+    def to_request(client)
+        client.user(self)
+    end
 end

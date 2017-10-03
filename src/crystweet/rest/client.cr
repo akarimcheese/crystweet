@@ -118,6 +118,10 @@ module Twitter::Rest
             Twitter::Request::User.new(self, user.id)
         end
         
+        def user(user : (Twitter::Response::User))
+            Twitter::Request::User.new(self, user.id)
+        end
+        
         def search(query)
             Twitter::Request::Search.new(self, query)
         end

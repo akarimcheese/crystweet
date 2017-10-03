@@ -18,6 +18,23 @@ module Twitter::Request
             end
         end
         
+        def show(include_entities : Bool? = nil)
+            endpoint = "users/show.json?"
+            user_id, screen_name = @user_id, @screen_name
+            
+            params = {} of String => (String | Nil)
+            
+            params["user_id"] = @user_id.to_s if user_id
+            params["screen_name"] = @screen_name if screen_name
+            params["include_entities"] = include_entities.to_s if include_entities
+            params.compact! # Safekeeping
+            
+            response = get(endpoint, params)
+            
+            user_parser = JSON::PullParser.new(response.body)
+            return Twitter::Response::User.new(user_parser)
+        end
+        
         # List Version
         def followers_list(cursor : UInt64? = nil, count : Int32? = nil, skip_status : Bool? = nil, include_user_identities : Bool? = nil)
             # TODO https://dev.twitter.com/rest/reference/get/followers/list

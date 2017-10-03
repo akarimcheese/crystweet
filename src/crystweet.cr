@@ -12,6 +12,8 @@ module Twitter
     #     ENV["TWITTER_ACCESS_SECRET"]
     # ).persistent
     
+    # puts Twitter::Request::User.new(client, "jordwalke").show
+    
     # user_ids = Twitter::Request::User.new(
     #     client,
     #     "jordwalke"
