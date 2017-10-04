@@ -5,7 +5,7 @@ There are better Twitter libraries out there for user-specific queries, such as 
 
 # TODO
 
-- Call Rate Limit Endpoint when Rate Limit is hit so we don't sleep for a whole 15 minutes (https://developer.twitter.com/en/docs/developer-utilities/rate-limit-status/overview.html)
+- Call Rate Limit Endpoint when Rate Limit is hit so we don't sleep for more time than needed (https://developer.twitter.com/en/docs/developer-utilities/rate-limit-status/overview.html)
 - Figure out how crystal library versions work
 - Factor out core "cursor" iterator functionality into an interface/class, make individual subclasses/structs for individual cursors such as user id cursors and what not
 - Ya know..., tests
