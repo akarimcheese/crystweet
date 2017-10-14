@@ -96,7 +96,7 @@ module Twitter::Rest
                 # puts "Rate limit reached... sleeping and retrying after 5 minutes..."
                 @on_rate_limit.call()
                 sleep(5*60)
-                return get(url)
+                return post(url, params)
             else
                 # Replace with typed exception
                 raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
