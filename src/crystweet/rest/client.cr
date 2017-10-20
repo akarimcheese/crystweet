@@ -36,9 +36,10 @@ module Twitter::Rest
         def request_oauth_token(callback_url)
             params = {"oauth_callback" => callback_url}
             response = post("https://api.twitter.com/oauth/request_token", params).body
-            authorization_endpoint = "https://api.twitter.com/oauth/authorize?"
+            authorization_endpoint = "https://api.twitter.com/oauth/authorize?oauth_token"
             
             if response =~ /oauth_token=([^&]+)&oauth_token_secret=([^&]+)&/
+                puts response
                 return {
                     "oauth_token" => $1, 
                     "oauth_token_secret" => $2,
