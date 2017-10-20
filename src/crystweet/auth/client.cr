@@ -6,6 +6,48 @@ require "../rest/*"
 require "../stream/*"
 
 module Twitter::Auth
+    # TODO: Put in Model
+    struct RequestToken
+        property oauth_token : String
+        property oauth_token_secret : String
+        property oauth_authorization_link : String
+        
+        def initialize(response : String)
+            authorization_endpoint = "https://api.twitter.com/oauth/authorize?oauth_token="
+            
+            if response =~ /^oauth_token=([^&]+)&oauth_token_secret=([^&]+)&/
+                @oauth_token = $1
+                @oauth_token_secret = $2
+                @oauth_authorization_link = "#{authorization_endpoint}#{$1}"
+            else
+                raise "No oauth token returned"
+            end
+        end
+    end
+    
+    # TODO: Put in Model
+    struct AccessToken
+        property oauth_token : String
+        property oauth_token_secret : String
+        property user_id : UInt64
+        property screen_name : String
+        property x_auth_expires : UInt64
+        
+        def initialize(response : String)
+            if response =~ /^oauth_token=([^&]+)&oauth_token_secret=([^&]+)&user_id=([^&]+)&screen_name=([^&]+)&x_auth_expires=([^&]+)$/
+                return {
+                    @oauth_token = $1, 
+                    @oauth_token_secret = $2,
+                    @user_id = $3.to_u64,
+                    @screen_name = $4,
+                    @x_auth_expires = $5.to_u64
+                }
+            else
+                raise "No oauth token returned"
+            end
+        end
+    end
+    
     class Client < Twitter::Client
         def initialize(consumer_key, consumer_secret, access_token, access_secret)
             super(consumer_key, consumer_secret, access_token, access_secret)
@@ -23,17 +65,8 @@ module Twitter::Auth
         def oauth_request_token(callback_url)
             params = {"oauth_callback" => callback_url}
             response = @client.post_form("https://api.twitter.com/oauth/request_token", params).body
-            authorization_endpoint = "https://api.twitter.com/oauth/authorize?oauth_token="
             
-            if response =~ /^oauth_token=([^&]+)&oauth_token_secret=([^&]+)&/
-                puts response
-                return {
-                    "oauth_token" => $1, 
-                    "oauth_token_secret" => $2,
-                    "oauth_authorization_link" => "#{authorization_endpoint}#{$1}"
-                }
-            end
-            raise "No oauth token returned"
+            RequestToken.new(response)
         end
         
         def oauth_access_token(oauth_token, oauth_verifier)
@@ -43,17 +76,7 @@ module Twitter::Auth
             params = {"oauth_verifier" => oauth_verifier}
             response = oauth_client.post_form("https://api.twitter.com/oauth/access_token", params).body
            
-            puts response
-            if response =~ /^oauth_token=([^&]+)&oauth_token_secret=([^&]+)&user_id=([^&]+)&screen_name=([^&]+)&x_auth_expires=([^&]+)$/
-                return {
-                    "oauth_token" => $1, 
-                    "oauth_token_secret" => $2,
-                    "user_id" => $3,
-                    "screen_name" => $4,
-                    "x_auth_expires" => $5
-                }
-            end
-            raise "No oauth token returned"
+            AccessToken.new(response)
         end
         
         def rest_client(oauth_token, oauth_verifier)
