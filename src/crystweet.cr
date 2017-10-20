@@ -1,6 +1,7 @@
 require "./crystweet/*"
 require "./crystweet/rest/*"
 require "./crystweet/stream/*"
+require "./crystweet/oauth/*"
 require "./crystweet/models/request/*"
 require "./crystweet/models/response/*"
 

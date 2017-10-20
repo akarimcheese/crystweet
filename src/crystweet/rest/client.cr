@@ -32,23 +32,6 @@ module Twitter::Rest
             self
         end
         
-        # TODO: Move to interface level
-        def request_oauth_token(callback_url)
-            params = {"oauth_callback" => callback_url}
-            response = post("https://api.twitter.com/oauth/request_token", params).body
-            authorization_endpoint = "https://api.twitter.com/oauth/authorize?oauth_token="
-            
-            if response =~ /oauth_token=([^&]+)&oauth_token_secret=([^&]+)&/
-                puts response
-                return {
-                    "oauth_token" => $1, 
-                    "oauth_token_secret" => $2,
-                    "oauth_authorization_link" => "#{authorization_endpoint}#{$1}"
-                }
-            end
-            raise "No oauth token returned"
-        end
-        
         # def userSearch(query, params)
         #     request = 
         #         Twitter::Request.new(self, :userSearch, params)
@@ -116,7 +99,7 @@ module Twitter::Rest
                 return post(url, params)
             else
                 # Replace with typed exception
-                raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
+                raise response.body
             end
         end
         
