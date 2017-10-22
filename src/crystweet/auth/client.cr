@@ -63,6 +63,7 @@ module Twitter::Auth
         
         # TODO: Move to interface level
         def oauth_request_token(callback_url)
+            oauth()
             params = {"oauth_callback" => callback_url}
             response = @client.post_form("https://api.twitter.com/oauth/request_token", params).body
             
