@@ -16,114 +16,40 @@ module Twitter::Response
     end
     
     # Intended for user ids call for now
-    abstract class Cursor(T)
+    abstract class Cursor(T, A)
         include Iterator(T)
         
         # property ids, next_cursor, previous_cursor
         # property twitter_request, index
         
-        @collection: Array(T) # @ids : Array(T)
-        @next_cursor : UInt64
-        @previous_cursor : UInt64
-        @index : Int32
-        @request : Proc(UInt64, HTTP::Client::Response)
+        property collection : Array(T) # @ids : Array(T)
+        property inner_index : Int32
+        property cum_index : Int32
+        property request : Proc(A, HTTP::Client::Response)
         
         def initialize(body : String, @request)
-            intermediate_json = from_json(JSON::PullParser.new(body))
+            @collection = [] of T
             
-            @next_cursor = intermediate_json.next_cursor
-            @previous_cursor = intermediate_json.previous_cursor
-            @collection = get_collection_from(intermediate_json)
-            
-            @index = 0
+            # @collection should be filled here
+            process_json(body) 
+            @inner_index = 0
+            @cum_index = 0
         end
         
-        private abstract def get_collection_from(intermediate_json : CursorJSON) : Array(T)
+        private abstract def stop? : Bool
+        private abstract def next_page : Array(T)
+        private abstract def process_json(body : String) : Void
         
-        abstract def from_json(json : JSON::PullParser) : CursorJSON
-        
-        # def initialize(twitter_request : Twitter::Request, json : JSON::PullParser)
-        #     json = CursorJSON(T).new(json)
-            
-        #     @twitter_request = twitter_request
-        #     @ids = json.ids
-        #     @next_cursor = json.next_cursor
-        #     @previous_cursor = json.previous_cursor
-            
-        #     # puts "Prev Cursor: #{@previous_cursor}, String: #{json.previous_cursor_str}"
-        #     # puts "Next Cursor: #{@next_cursor}, String: #{json.next_cursor_str}"
-            
-        #     @index = 0
-        #     self
-        # end
-        
-        # Consumes iterator... sorry
-        # def to_screen_name_array
-        #     screen_names = [] of String
-        #     lookup_queue = [] of String
-            
-        #     each do |id|
-        #         lookup_queue << id.to_s
-                
-        #         if lookup_queue.size == 100
-        #             lookup_response =
-        #                 Twitter::Request.new(@twitter_request.client, :userLookup, {"user_id" => [lookup_queue.join(",")]})
-        #                     .as_post
-        #                     .ignore_rate_limit
-        #                     .exec
-                    
-        #             puts lookup_response.body
-        #             # Check status code
-        #             screen_name_chunk = 
-        #                 Array(Twitter::User)
-        #                     .new(JSON::PullParser
-        #                         .new(lookup_response.body)
-        #                     ).map{ |user| user.screen_name }
-                    
-        #             screen_names.concat(screen_name_chunk)
-            
-        #             lookup_queue = [] of String
-        #         end
-        #     end
-            
-        #     if lookup_queue.size > 0
-        #         lookup_response =
-        #             Twitter::Request.new(@twitter_request.client, :userLookup, {"user_id" => [lookup_queue.join(",")]})
-        #                 .as_post
-        #                 .exec
-                
-        #         # Check status code
-        #         screen_name_chunk = 
-        #             Array(Twitter::User)
-        #                 .new(JSON::PullParser
-        #                     .new(lookup_response.body)
-        #                 ).map{ |user| user.screen_name }
-                
-        #         screen_names.concat(screen_name_chunk)
-        
-        #         lookup_queue = [] of String
-        #     end
-            
-        #     screen_names
-        # end
-        
-        def next_page(cursor)
-            @request.call(cursor)
-        end
-        
+        # Consume iterator
         def to_a
-            next_cursor = @next_cursor
-            
             array = [] of T
             array.concat(@collection)
             
-            while next_cursor != 0
-                response = next_page(next_cursor)
+            while !stop?
+                response = next_page
                 
-                intermediate_json = from_json(JSON::PullParser.new(response.body))
-                next_cursor = intermediate_json.next_cursor
-                collection = get_collection_from(intermediate_json)
-                array.concat(collection)
+                process_json(response.body)
+                array.concat(@collection)
             end
             
             return array
@@ -135,12 +61,12 @@ module Twitter::Response
             #     return Iterator::Stop::INSTANCE
             # end
             
-            if @index == @collection.size
-                if @next_cursor == 0
+            if @inner_index == @collection.size
+                if stop?
                     return Iterator::Stop::INSTANCE
                 end
             
-                response = next_page(@next_cursor)
+                response = next_page
                 
                 # This is kinda redundant in current stage, bc
                 # any non-200 will not be returned by client
@@ -150,17 +76,19 @@ module Twitter::Response
                     return Iterator::Stop::INSTANCE
                 end
                 
-                intermediate_json = from_json(JSON::PullParser.new(response.body))
-                @index = 0
-                @collection = get_collection_from(intermediate_json)
-                @previous_cursor = intermediate_json.previous_cursor
-                @next_cursor = intermediate_json.next_cursor
-                # puts "Prev Cursor: #{@previous_cursor}, String: #{intermediate_json.previous_cursor_str}"
-                # puts "Next Cursor: #{@next_cursor}, String: #{intermediate_json.next_cursor_str}"
+                @inner_index = 0
+                process_json(response.body)
+                
+                if stop?
+                    return Iterator::Stop::INSTANCE
+                end
             end
             
-            next_item = @collection[@index]
-            @index = @index + 1
+            # puts "Collection Size #{@collection.size}, Inner Index #{@inner_index}\n Cum Index #{@cum_index}"
+            
+            next_item = @collection[@inner_index]
+            @inner_index = @inner_index + 1
+            @cum_index = @cum_index + 1
             return next_item
         end
     end

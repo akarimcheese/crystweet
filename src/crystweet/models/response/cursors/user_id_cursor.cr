@@ -13,7 +13,18 @@ module Twitter::Response
     end
     
     # Intended for user ids call for now
-    class UserIDCursor(T) < Twitter::Response::Cursor(T)
+    class UserIDCursor(T) < Twitter::Response::Cursor(T, UInt64)
+        property next_cursor : UInt64
+        property previous_cursor : UInt64
+        
+        def initialize(body : String, @request)
+            @next_cursor = 0
+            @previous_cursor = 0
+            
+            # next and previous cursor initialized here
+            super(body, @request) 
+        end
+    
         def get_collection_from(json : CursorJSON) : Array(T)
             json.ids
         end
@@ -22,70 +33,19 @@ module Twitter::Response
             UserIDCursorJSON(T).new(json)
         end
         
-        # def initialize(twitter_request : Twitter::Request, json : JSON::PullParser)
-        #     json = CursorJSON(T).new(json)
-            
-        #     @twitter_request = twitter_request
-        #     @ids = json.ids
-        #     @next_cursor = json.next_cursor
-        #     @previous_cursor = json.previous_cursor
-            
-        #     # puts "Prev Cursor: #{@previous_cursor}, String: #{json.previous_cursor_str}"
-        #     # puts "Next Cursor: #{@next_cursor}, String: #{json.next_cursor_str}"
-            
-        #     @index = 0
-        #     self
-        # end
+        def stop?
+            @next_cursor == 0
+        end
         
-        # Consumes iterator... sorry
-        # def to_screen_name_array
-        #     screen_names = [] of String
-        #     lookup_queue = [] of String
-            
-        #     each do |id|
-        #         lookup_queue << id.to_s
-                
-        #         if lookup_queue.size == 100
-        #             lookup_response =
-        #                 Twitter::Request.new(@twitter_request.client, :userLookup, {"user_id" => [lookup_queue.join(",")]})
-        #                     .as_post
-        #                     .ignore_rate_limit
-        #                     .exec
-                    
-        #             puts lookup_response.body
-        #             # Check status code
-        #             screen_name_chunk = 
-        #                 Array(Twitter::User)
-        #                     .new(JSON::PullParser
-        #                         .new(lookup_response.body)
-        #                     ).map{ |user| user.screen_name }
-                    
-        #             screen_names.concat(screen_name_chunk)
-            
-        #             lookup_queue = [] of String
-        #         end
-        #     end
-            
-        #     if lookup_queue.size > 0
-        #         lookup_response =
-        #             Twitter::Request.new(@twitter_request.client, :userLookup, {"user_id" => [lookup_queue.join(",")]})
-        #                 .as_post
-        #                 .exec
-                
-        #         # Check status code
-        #         screen_name_chunk = 
-        #             Array(Twitter::User)
-        #                 .new(JSON::PullParser
-        #                     .new(lookup_response.body)
-        #                 ).map{ |user| user.screen_name }
-                
-        #         screen_names.concat(screen_name_chunk)
+        def next_page
+            @request.call(@next_cursor)
+        end
         
-        #         lookup_queue = [] of String
-        #     end
-            
-        #     screen_names
-        # end
-        
+        def process_json(json)
+            intermediate_json = from_json(JSON::PullParser.new(json))
+            @collection = get_collection_from(intermediate_json)
+            @previous_cursor = intermediate_json.previous_cursor
+            @next_cursor = intermediate_json.next_cursor
+        end
     end
 end

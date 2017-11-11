@@ -23,12 +23,12 @@ module Twitter::Response
         property in_reply_to_user_id_str : String?
         property in_reply_to_tweet_id : UInt64?
         property in_reply_to_tweet_id_str : String?
-        property reply_count : Int32 # Not in doc
+        property reply_count : Int32? # Not in doc
             
         property is_quote_tweet : Bool # Not in doc
         property quoted_tweet_id : UInt64?
         property quoted_tweet_id_str : String?
-        property quote_count : Int32 # Not in doc
+        property quote_count : Int32? # Not in doc
             
         property favorited : Bool?
         property retweeted : Bool?
@@ -52,8 +52,6 @@ module Twitter::Response
             @text = ""
             @user = Twitter::Response::User.new()
             @retweet_count = 0
-            @reply_count = 0
-            @quote_count = 0
             @is_quote_tweet = false
             @entities = Entities.new()
         end

@@ -1,6 +1,6 @@
 require "json"
 require "http"
-require "../response/cursors/user_id_cursor"
+require "../response/cursors/*"
 
 module Twitter::Request
     class User
@@ -110,6 +110,40 @@ module Twitter::Request
                     request
                 )
             end
+        end
+        
+        # TODO: Make an iterator and simulate pagination or something
+        def tweets(count : Int32? = nil, since_id : UInt64? = nil, max_id : UInt64? = nil, exclude_replies : Bool? = nil, include_retweets : Bool? = nil, trim_user : Bool? = nil)
+            endpoint = "statuses/user_timeline.json?"
+        
+            params = {} of String => (String | Nil)
+            
+            params["user_id"] = @user_id.to_s if @user_id
+            params["screen_name"] = @screen_name if @screen_name
+            params["count"] = [200, count].min.to_s if count
+            params["since_id"] = since_id.to_s if since_id
+            params["max_id"] = max_id.to_s if max_id
+            params["exclude_replies"] = exclude_replies.to_s if (exclude_replies != nil)
+            params["include_rts"] = include_retweets.to_s if (include_retweets != nil)
+            params["trim_user"] = trim_user.to_s if (trim_user != nil)
+            params.compact! # Safekeeping
+            
+            
+                
+            response = get(endpoint, params)
+            
+            if (count <= 200)
+                tweet_parser = JSON::PullParser.new(response.body)
+                return Array(Twitter::Response::TopLevelTweet).new(tweet_parser)
+            end
+            
+            request = 
+                ->(max_id : UInt64) { 
+                    params["max_id"] = max_id.to_s
+                    get(endpoint, params)
+                }
+            
+            Twitter::Response::Tweets.new(response.body, request, count)
         end
         
         # TODO: Find a way to refactor this to share code with other requests made

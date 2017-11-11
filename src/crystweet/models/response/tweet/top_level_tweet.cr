@@ -29,14 +29,14 @@ module Twitter::Response
             in_reply_to_user_id_str: {type: String, nilable: true},
             in_reply_to_tweet_id: {type: UInt64, nilable: true, key: "in_reply_to_status_id"},
             in_reply_to_tweet_id_str: {type: String, nilable: true, key: "in_reply_to_status_id_str"},
-            reply_count: Int32, # Not in doc
+            reply_count: {type: Int32, nilable: true}, # Not in doc
             
             # Quoted
             is_quote_tweet: {type: Bool, key: "is_quote_status"}, # Not in doc
             quoted_tweet_id: {type: UInt64, nilable: true, key: "quoted_status_id"},
             quoted_tweet_id_str: {type: String, nilable: true, key: "quoted_status_id_str"},
             quoted_tweet: {type: NestedTweet, nilable: true, key: "quoted_status"},
-            quote_count: Int32, # Not in doc
+            quote_count: {type: Int32, nilable: true}, # Not in doc
             
             # Perspectival
             favorited: {type: Bool, nilable: true},
