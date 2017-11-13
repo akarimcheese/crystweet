@@ -3,6 +3,37 @@ require "./*"
 
 module Twitter::Response
     struct TopLevelTweet < Twitter::Response::Tweet
+        def self.extended_new_while_streaming(parser : JSON::PullParser)
+            tweet = self.new(parser)
+            
+            if (extended_tweet = tweet.extended_tweet)
+                tweet.text = extended_tweet.full_text
+                tweet.entities = extended_tweet.entities
+                # @extended_entities = extended_tweet.extended_entities
+                # TODO: Extend nested tweet if that's an issue
+            end
+            
+            tweet
+        end
+        
+        def self.extended_new(parser : JSON::PullParser)
+            tweet = self.new(parser)
+            tweet.extend_text
+        end
+        
+        def extend_text
+            if (full_text = @full_text)
+                @text = full_text
+                if (nested_tweet = @retweeted_tweet)
+                    @retweeted_tweet = nested_tweet.extend_text
+                end
+                if (nested_tweet =  @quoted_tweet)
+                    @quoted_tweet = nested_tweet.extend_text
+                end
+            end
+            
+            self
+        end
     
         def is_top_level?
             true
@@ -16,12 +47,15 @@ module Twitter::Response
             id: UInt64,
             id_str: String,
             created_at: String,
-            text: String,
+            text: {type: String, default: ""},
             user: Twitter::Response::User,
             favorites_count: {type: Int32, nilable: true},
             retweet_count: Int32,
             retweeted_tweet: {type: NestedTweet, nilable: true, key: "retweeted_status"},
             lang: {type: String, nilable: true},
+            
+            full_text: {type: String, nilable: true},
+            extended_tweet: {type: ExtendedTweet, nilable: true},
             
             # Reply
             in_reply_to_screen_name: {type: String, nilable: true},

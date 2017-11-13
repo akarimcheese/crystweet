@@ -67,15 +67,15 @@ module Twitter::Response
             @quoted_tweet
         end
     
-        def is_reply?
+        def is_reply? : Bool
             return !@in_reply_to_screen_name.nil?
         end
         
-        def is_retweet?
+        def is_retweet? : Bool
             return !@retweeted_tweet.nil?
         end
         
-        def is_quote?
+        def is_quote? : Bool
             return @is_quote_tweet
         end
     end

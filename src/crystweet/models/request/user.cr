@@ -126,6 +126,7 @@ module Twitter::Request
             params["exclude_replies"] = exclude_replies.to_s if (exclude_replies != nil)
             params["include_rts"] = include_retweets.to_s if (include_retweets != nil)
             params["trim_user"] = trim_user.to_s if (trim_user != nil)
+            params["tweet_mode"] = "extended"
             params.compact! # Safekeeping
             
             
@@ -134,7 +135,9 @@ module Twitter::Request
             
             if (count <= 200)
                 tweet_parser = JSON::PullParser.new(response.body)
-                return Array(Twitter::Response::TopLevelTweet).new(tweet_parser)
+                tweets = Array(Twitter::Response::TopLevelTweet).new(tweet_parser).map { |tweet| tweet.extend_text }
+        
+                return tweets
             end
             
             request = 

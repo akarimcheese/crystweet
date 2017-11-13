@@ -1,9 +1,18 @@
 require "../*"
+require "./extended_tweet"
 
 module Twitter::Response
     struct NestedTweet < Tweet
         @quoted_tweet : Nil
         @retweeted_tweet : Nil
+        
+        def extend_text
+            if (full_text = @full_text)
+                @text = full_text
+            end
+            
+            self
+        end
     
         def is_top_level?
             false
@@ -17,11 +26,14 @@ module Twitter::Response
             id: UInt64,
             id_str: String,
             created_at: String,
-            text: String,
+            text: {type: String, default: ""},
             user: Twitter::Response::User,
             favorites_count: {type: Int32, nilable: true},
             retweet_count: Int32,
             lang: {type: String, nilable: true},
+            
+            full_text: {type: String, nilable: true},
+            extended_tweet: {type: ExtendedTweet, nilable: true},
             
             # Reply
             in_reply_to_screen_name: {type: String, nilable: true},

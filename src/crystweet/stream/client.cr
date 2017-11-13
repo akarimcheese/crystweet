@@ -97,8 +97,9 @@ module Twitter::Stream
                 # end
                 
                 begin
+                    
                     # start = Time.now()
-                    tweet = Twitter::Response::TopLevelTweet.new(JSON::PullParser.new(line)) 
+                    tweet = Twitter::Response::TopLevelTweet.extended_new_while_streaming(JSON::PullParser.new(line)) 
                     # finish = Time.now()
                     # puts "Time to parse: #{(finish - start).total_milliseconds}"
 

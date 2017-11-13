@@ -29,7 +29,8 @@ module Twitter::Response
         
         def process_json(body)
             tweet_parser = JSON::PullParser.new(body)
-            @collection = Array(Twitter::Response::TopLevelTweet).new(tweet_parser)
+            @collection = Array(Twitter::Response::TopLevelTweet).new(tweet_parser).map { |tweet| tweet.extend_text }
+            
             @max_id = @collection[-1].id if (@collection.size != 0)
         end
     end
