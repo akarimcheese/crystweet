@@ -6,23 +6,12 @@ require "./crystweet/models/request/*"
 require "./crystweet/models/response/*"
 
 module Twitter
-    client = Twitter::Rest::Client.new(
-        ENV["TWITTER_CONSUMER_KEY"], 
-        ENV["TWITTER_CONSUMER_SECRET"], 
-        ENV["TWITTER_ACCESS_TOKEN"],
-        ENV["TWITTER_ACCESS_SECRET"]
-    ).persistent
-    
-    tweets = Twitter::Request::User.new(client, "AdamSchefter").tweets(count: 3200, exclude_replies: true, include_retweets: false).to_a
-
-    tweet_string = "tweet, category\n" + tweets.to_a.map { |tweet|
-        tweet.text.inspect + ", "
-    }.join("\n")
-    
-    
-    puts tweet_string
-    
-    File.write("schefttweets.csv", tweet_string)
+    # client = Twitter::Rest::Client.new(
+    #     ENV["TWITTER_CONSUMER_KEY"], 
+    #     ENV["TWITTER_CONSUMER_SECRET"], 
+    #     ENV["TWITTER_ACCESS_TOKEN"],
+    #     ENV["TWITTER_ACCESS_SECRET"]
+    # ).persistent
     
     # puts Twitter::Request::User.new(client, "jordwalke").show
     
