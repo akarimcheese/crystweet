@@ -49,7 +49,8 @@ module Twitter::Request
         # Abstract this for all requests, maybe
         def get(endpoint, params)
             compact_params : Hash(String, String)
-            compact_params = params.compact
+            compact_params = params.compact # Safekeeping
+            
             encoded_params = HTTP::Params.encode(compact_params)
             response = @client.get("https://api.twitter.com/1.1/#{endpoint}#{encoded_params}")
             
