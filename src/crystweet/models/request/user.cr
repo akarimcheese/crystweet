@@ -148,7 +148,8 @@ module Twitter::Request
         # TODO: Find a way to refactor this to share code with other requests made
         def get(endpoint, params)
             compact_params : Hash(String, String)
-            compact_params = params.compact
+            compact_params = params.compact  # Safekeeping
+            
             encoded_params = HTTP::Params.encode(compact_params)
             response = @client.get("https://api.twitter.com/1.1/#{endpoint}#{encoded_params}")
             
