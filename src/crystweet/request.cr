@@ -60,7 +60,7 @@ require "http/server"
             
 #             case @verb
 #             when :POST
-#                 response = @client.client.post_form(@url, params.to_s)
+#                 response = @client.client.post(@url, form: params.to_s)
 #             else
 #                 response = @client.client.get("#{@url}#{@params.to_s}")
 #             end

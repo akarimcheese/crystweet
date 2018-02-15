@@ -36,7 +36,6 @@ module Twitter::Request
             params["source_screen_name"] = @source_screen_name if @source_screen_name
             params["target_user_id"] = @target_user_id.to_s if @target_user_id
             params["target_screen_name"] = @target_screen_name if @target_screen_name
-            params.compact! # Safekeeping
             
             response = get(endpoint, params)
             
@@ -46,7 +45,10 @@ module Twitter::Request
         
         # TODO: Find a way to refactor this to share code with other requests made
         def get(endpoint, params)
-            encoded_params = HTTP::Params.encode(params)
+            compact_params : Hash(String, String)
+            compact_params = params.compact # Safekeeping
+            
+            encoded_params = HTTP::Params.encode(compact_params)
             response = @client.get("https://api.twitter.com/1.1/#{endpoint}#{encoded_params}")
             
             return response

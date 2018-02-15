@@ -17,7 +17,6 @@ module Twitter::Request
             params["page"] = page.to_s if page
             params["count"] = count.to_s if count
             params["include_entities"] = include_entities.to_s if include_entities
-            params.compact! # Safekeeping
         
             response = get(endpoint, params)
             
@@ -49,7 +48,9 @@ module Twitter::Request
         
         # Abstract this for all requests, maybe
         def get(endpoint, params)
-            encoded_params = HTTP::Params.encode(params)
+            compact_params : Hash(String, String)
+            compact_params = params.compact
+            encoded_params = HTTP::Params.encode(compact_params)
             response = @client.get("https://api.twitter.com/1.1/#{endpoint}#{encoded_params}")
             
             return response

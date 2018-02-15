@@ -26,7 +26,6 @@ module Twitter::Request
             params["user_id"] = @user_id.to_s if @user_id
             params["screen_name"] = @screen_name if @screen_name
             params["include_entities"] = include_entities.to_s if include_entities
-            params.compact! # Safekeeping
             
             response = get(endpoint, params)
             
@@ -50,7 +49,6 @@ module Twitter::Request
             params["cursor"] = cursor.to_s if cursor
             params["count"] = count.to_s if count
             params["stringify_ids"] = stringify_ids.to_s if stringify_ids
-            params.compact! # Safekeeping
         
             response = get(endpoint, params)
             
@@ -89,7 +87,6 @@ module Twitter::Request
             params["cursor"] = cursor.to_s if cursor
             params["count"] = count.to_s if count
             params["stringify_ids"] = stringify_ids.to_s if stringify_ids
-            params.compact! # Safekeeping
         
             response = get(endpoint, params)
             
@@ -127,7 +124,6 @@ module Twitter::Request
             params["include_rts"] = include_retweets.to_s if (include_retweets != nil)
             params["trim_user"] = trim_user.to_s if (trim_user != nil)
             params["tweet_mode"] = "extended"
-            params.compact! # Safekeeping
             
             
                 
@@ -151,7 +147,9 @@ module Twitter::Request
         
         # TODO: Find a way to refactor this to share code with other requests made
         def get(endpoint, params)
-            encoded_params = HTTP::Params.encode(params)
+            compact_params : Hash(String, String)
+            compact_params = params.compact
+            encoded_params = HTTP::Params.encode(compact_params)
             response = @client.get("https://api.twitter.com/1.1/#{endpoint}#{encoded_params}")
             
             return response

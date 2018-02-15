@@ -73,16 +73,17 @@ module Twitter::Stream
             params_check(follow, track)
             
             params = {} of String => (String | Nil)
+            compact_params : Hash(String, String)
             
             params["follow"] = follow.join(",") if follow
             params["track"] = track.join(",") if track
-            params.compact! # Safekeeping
+            compact_params = params.compact # Safekeeping
             
             # TODO: verify that 2 lines below are necessary
             @client.connect_timeout = 60*60*24
             @client.read_timeout = 60*60*24
             
-            post_stream(params) do |line|
+            post_stream(compact_params) do |line|
                 # puts JSON.parse(line).as_h.keys.inspect
                 # puts JSON.parse(line)["entities"]
                 # puts "Retweeted tweet? #{JSON.parse(line)["retweeted_status"]? != nil}"
@@ -133,7 +134,7 @@ module Twitter::Stream
         # TODO: stream_as_strings
         
         def post_stream(params)
-            @client.post_form("https://stream.twitter.com/1.1/statuses/filter.json?", params) do |response|
+            @client.post("https://stream.twitter.com/1.1/statuses/filter.json?", form: params) do |response|
               while !response.body_io.closed?
                 # FIXME: break these two lines up into better, readable steps
                 string = response.body_io.gets("\r\n")

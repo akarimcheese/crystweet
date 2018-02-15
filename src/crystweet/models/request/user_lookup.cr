@@ -53,7 +53,6 @@ module Twitter::Request
             
                 params[param_key] = slice.join(",")
                 params["include_entities"] = include_entities.to_s if include_entities
-                params.compact! # Safekeeping
                 
                 response = @client.post(endpoint, params)
                 parser = JSON::PullParser.new(response.body)

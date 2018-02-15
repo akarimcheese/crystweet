@@ -4,6 +4,6 @@ version: 0.1.1
 authors:
   - Ayman Karim <akarim1@terpmail.umd.edu>
 
-crystal: 0.23.1
+crystal: 0.24.1
 
 license: MIT

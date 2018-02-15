@@ -65,7 +65,7 @@ module Twitter::Auth
         def oauth_request_token(callback_url)
             oauth()
             params = {"oauth_callback" => callback_url}
-            response = @client.post_form("https://api.twitter.com/oauth/request_token", params).body
+            response = @client.post("https://api.twitter.com/oauth/request_token", form: params).body
             
             RequestToken.new(response)
         end
@@ -75,7 +75,7 @@ module Twitter::Auth
             OAuth.authenticate(oauth_client, oauth_token, nil, @consumer_key, @consumer_secret)
             
             params = {"oauth_verifier" => oauth_verifier}
-            response = oauth_client.post_form("https://api.twitter.com/oauth/access_token", params).body
+            response = oauth_client.post("https://api.twitter.com/oauth/access_token", form: params).body
            
             AccessToken.new(response)
         end

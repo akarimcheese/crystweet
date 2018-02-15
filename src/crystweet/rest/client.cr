@@ -88,7 +88,7 @@ module Twitter::Rest
         
         def post(url, params)
             oauth()
-            response = @client.post_form(url, params)
+            response = @client.post(url, form: params)
             
             if response.status_code == 200
                 return response
