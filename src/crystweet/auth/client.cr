@@ -31,16 +31,14 @@ module Twitter::Auth
         property oauth_token_secret : String
         property user_id : UInt64
         property screen_name : String
-        property x_auth_expires : UInt64
         
         def initialize(response : String)
-            if response =~ /^oauth_token=([^&]+)&oauth_token_secret=([^&]+)&user_id=([^&]+)&screen_name=([^&]+)&x_auth_expires=([^&]+)$/
+            if response =~ /^oauth_token=([^&]+)&oauth_token_secret=([^&]+)&user_id=([^&]+)&screen_name=([^&]+)$/
                 return {
                     @oauth_token = $1, 
                     @oauth_token_secret = $2,
                     @user_id = $3.to_u64,
-                    @screen_name = $4,
-                    @x_auth_expires = $5.to_u64
+                    @screen_name = $4
                 }
             else
                 raise "No oauth token returned"
