@@ -82,13 +82,14 @@ module Twitter::Rest
                 return get(url)
             else
                 # Replace with typed exception
-                raise JSON.parse(response.body)["errors"].map{|err| err["message"].as_s }.join(",")
+                raise JSON.parse(response.body)["errors"].as_a.map{|err| err["message"].as_s }.join(",")
             end
         end
         
         def post(url, params)
             oauth()
-            response = @client.post(url, form: params)
+            compacted_params = params.compact # Safekeeping
+            response = @client.post(url, form: compacted_params)
             
             if response.status_code == 200
                 return response
