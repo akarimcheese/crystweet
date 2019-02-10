@@ -88,7 +88,7 @@ module Twitter::Rest
         
         def post(url, params)
             oauth()
-            compacted_params = params.compact
+            compacted_params = params.compact # Safekeeping
             response = @client.post(url, form: compacted_params)
             
             if response.status_code == 200
