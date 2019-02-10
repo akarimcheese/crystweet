@@ -49,7 +49,7 @@ module Twitter::Request
             end
             
             identifiers.each_slice(100) do |slice|
-                params = {} of String => (String | Nil)
+                params = {} of String => String
             
                 params[param_key] = slice.join(",")
                 params["include_entities"] = include_entities.to_s if include_entities
